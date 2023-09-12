@@ -1,0 +1,69 @@
+
+name: Delivery pipeline
+run-name: ${{github.actor}} - pipeline
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+
+
+jobs:
+  
+  pipeline-delivery:
+    runs-on: ubuntu-latest
+    outputs:
+      RUN_ID: ${{steps.run_id.outputs.RUN_ID}}
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      
+      - name: Set Run ID
+        id: run_id
+        run: |
+          echo 'RUN_ID=${{github.run_id}}' >> "$GITHUB_OUTPUT"
+      
+      - name: Install Dependencies
+        run: |
+          npm install
+      
+      - name: Running Tests
+        run: | 
+          npm run test
+      
+      - name: Build Project
+        run: | 
+          npm run build
+      
+      - name: Zip Archive
+        run: | 
+          zip -r ${{github.run_id}} dist
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: food-app
+          path: dist
+          retention-days: 1
+
+  deploy-app:
+    
+    runs-on: ubuntu-latest
+    needs: [pipeline-delivery]
+
+    steps:
+
+      - name: Download artifacts
+        run: | 
+          echo "Downloading artifacts"
+      
+      - name: List artifacts
+        run: | 
+          chmod -R +x ./scripts
+          ./scripts/download-artifacts ${{github.token}} ${{github.repository}} ${{needs.pipeline-delivery.outputs.RUN_ID}}
