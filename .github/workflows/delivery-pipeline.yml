@@ -63,7 +63,6 @@ jobs:
         run: | 
           echo "Downloading artifacts"
       
-      
       - name: List artifacts
         run: | 
           artifacts=$(curl -L \
@@ -73,3 +72,4 @@ jobs:
           https://api.github.com/repos/${{github.repository}}/actions/runs/${{needs.pipeline-delivery.outputs.RUN_ID}}/artifacts)
 
           results=$(echo "$artifacts" | jq -r ".artifacts[]")
+          echo "$results"
