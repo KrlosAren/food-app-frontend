@@ -60,6 +60,8 @@ jobs:
     steps:
 
       - name: Download artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: | 
           echo "Downloading artifacts"
           gh run download ${{needs.pipeline-delivery.outputs.RUN_ID}}
