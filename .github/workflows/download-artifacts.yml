@@ -62,8 +62,8 @@ jobs:
       - name: Download artifacts
         run: | 
           echo "Downloading artifacts"
+          gh run download ${{needs.pipeline-delivery.outputs.RUN_ID}}
       
       - name: List artifacts
         run: | 
-          chmod -R +x $GITHUB_WORKSPACE/scripts
-          GITHUB_WORKSPACE/scripts/download-artifacts ${{github.token}} ${{github.repository}} ${{needs.pipeline-delivery.outputs.RUN_ID}}
+          ls -lhart
