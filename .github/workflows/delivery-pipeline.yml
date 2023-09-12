@@ -70,6 +70,6 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{github.token}}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
-          httpshttps://api.github.com/repos/${{github.repository}}/actions/runs/${{needs.pipeline-delivery.outputs.RUN_ID}}/artifacts)
+          https://api.github.com/repos/${{github.repository}}/actions/runs/${{needs.pipeline-delivery.outputs.RUN_ID}}/artifacts)
 
-          echo "$artifacts"
+          results=$(echo "$artifacts" | jq -r ".artifacts[]")
