@@ -65,5 +65,5 @@ jobs:
       
       - name: List artifacts
         run: | 
-          chmod -R +x ./scripts
-          ./scripts/download-artifacts ${{github.token}} ${{github.repository}} ${{needs.pipeline-delivery.outputs.RUN_ID}}
+          chmod -R +x $GITHUB_WORKSPACE/scripts
+          GITHUB_WORKSPACE/scripts/download-artifacts ${{github.token}} ${{github.repository}} ${{needs.pipeline-delivery.outputs.RUN_ID}}
